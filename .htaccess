@@ -4,25 +4,31 @@ RewriteBase /
 # Jangan rewrite index.php
 RewriteRule ^index\.php$ - [L]
 
-# Jika file / folder tidak ada → WordPress handle
+# WordPress main rewrite
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 
-# ===== BLOCK ERROR LOG TAPI WEBSITE TETAP JALAN =====
+# =============================
+# PHP ERROR HANDLING (AMAN)
+# =============================
 
-# Matikan PHP error display di frontend
+# Matikan tampil error ke publik
 <IfModule mod_php.c>
-php_flag display_errors Off
-php_flag log_errors On
+  php_flag display_errors Off
+  php_flag log_errors Off
 </IfModule>
 
-# Jika pakai PHP-FPM
+# PHP-FPM
 <IfModule mod_proxy_fcgi.c>
-SetEnv PHP_DISPLAY_ERRORS Off
+  SetEnv PHP_DISPLAY_ERRORS Off
 </IfModule>
 
-# Custom error page → tetap ke WordPress
-ErrorDocument 403 /index.php
+# =============================
+# JANGAN REDIRECT ERROR 500
+# =============================
 ErrorDocument 404 /index.php
-ErrorDocument 500 /index.php
+ErrorDocument 403 /index.php
+
+# ❌ JANGAN ADA:
+# ErrorDocument 500
